@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
+
+	<!-- 控制台输出 -->
+	<appender name="stdout" class="org.apache.log4j.ConsoleAppender">
+		<!-- 输出debug级别日志 -->
+		<param name="threshold" value="INFO" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d - %c [%t] %-5p %c %x %l - %m%n" />
+		</layout>
+	</appender>
+
+	<!-- 业务日志输出 -->
+	<appender name="rootAppender" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="log/duobao.log" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd-HH" />
+		<param name="threshold" value="DEBUG" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d - %c [%t] %-5p %c %x %l - %m%n" />
+		</layout>
+	</appender>
+
+	<!-- 异常日志 -->
+	<appender name="errorAppender" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="log/duobaoError.log" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d - %c [%t] %-5p %c %x %l - %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="ERROR" />
+			<param name="LevelMax" value="ERROR" />
+		</filter>
+	</appender>
+
+	<!-- 报警日志 -->
+	<appender name="fatalAppender" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="log/duobaoFatal.log" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d - %c [%t] %-5p %c %x %l - %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="FATAL" />
+			<param name="LevelMax" value="FATAL" />
+		</filter>
+	</appender>
+
+	<!-- 数据库连接日志 & spring日志 & http日志等系统配置级别日志 -->
+	<appender name="configAppender" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="log/duobaoConfig.log" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d - %c [%t] %-5p %c %x %l - %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="INFO" />
+			<param name="LevelMax" value="ERROR" />
+		</filter>
+	</appender>
+	<!-- duobao cache 相关日志 -->
+	<appender name="cacheAppender" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="log/duobaoCache.log" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd-HH" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d - %c [%t] %-5p %c %x %l - %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="INFO" />
+			<param name="LevelMax" value="ERROR" />
+		</filter>
+	</appender>
+	
+	<!-- duobao dao 相关日志 -->
+	<appender name="daoAppender" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="log/duobaoDaosql.log" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd-HH" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d - %c [%t] %-5p %c %x %l - %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="INFO" />
+			<param name="LevelMax" value="ERROR" />
+		</filter>
+	</appender>
+
+	<!-- 日志区分输出 -->
+	<logger name="errorLogger">  
+		<level value="ERROR"/>
+		<appender-ref ref="errorAppender" />  
+	</logger>
+    <logger name="fatalLogger" >  
+		<level value="FATAL"/>
+		<appender-ref ref="fatalAppender" />  
+	</logger>
+	<logger name="java.sql" additivity="false">
+		<level value="DEBUG" />
+		<appender-ref ref="daoAppender" />
+	</logger>
+	<logger name="com.netease.duobao.dao" additivity="false">
+		<level value="DEBUG" />
+		<appender-ref ref="daoAppender" />
+	</logger>
+	<logger name="org" additivity="false">
+		<level value="DEBUG" />
+		<appender-ref ref="configAppender" />
+	</logger>
+	<logger name="com.netease.duobao.cache" additivity="false">
+		<level value="DEBUG" />
+		<appender-ref ref="cacheAppender" />
+	</logger>
+
+	<root>
+		<level value="DEBUG" />
+		<appender-ref ref="rootAppender" />
+		<appender-ref ref="stdout" />
+	</root>
+
+</log4j:configuration>
